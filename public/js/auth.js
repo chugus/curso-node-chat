@@ -1,4 +1,5 @@
 const miForm = document.querySelector('form');
+const google_signout = document.querySelector('#google_signout');
 
 const url = (window.location.hostname.includes('localhost'))
     ? 'http://localhost:8080/api/auth/'
@@ -38,36 +39,35 @@ miForm.addEventListener('submit', ev => {
 
 
 
-function onSignIn(googleUser) {
+function handleCredentialResponse(response) {
 
-    // var profile = googleUser.getBasicProfile();
-    // console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-    // console.log('Name: ' + profile.getName());
-    // console.log('Image URL: ' + profile.getImageUrl());
-    // console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+    // Google Token : ID Token
+    // console.log(response.credential);
 
-    var id_token = googleUser.getAuthResponse().id_token;
-    const data = { id_token };
+    const body = { id_token: response.credential }
 
     fetch(url + 'google', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
     })
         .then(resp => resp.json())
-        .then(({ token }) => {
-
-            localStorage.setItem('token', token);
-            window.location = 'chat.html'
-
+        .then(resp => {
+            localStorage.setItem('email', resp.usuario.correo)
         })
-        .catch(console.log);
+        .catch(console.warn)
 
 }
 
-function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-        console.log('User signed out.');
-    });
+google_signout.onclick = () => {
+
+    google_signout.accounts.id.disableAutoSelect();
+
+    google_signout.accounts.id.revoke(localStorage.getItem('email'), done => {
+        localStorage.clear();
+        localStorage.reload();
+    })
+
 }
