@@ -2,7 +2,7 @@ const miForm = document.querySelector('form');
 
 const url = (window.location.hostname.includes('localhost'))
     ? 'http://localhost:8080/api/auth/'
-    : 'https://restserver-curso-fher.herokuapp.com/api/auth/';
+    : 'https://curso-node-chat-2021.herokuapp.com/api/auth/';
 
 
 miForm.addEventListener('submit', ev => {
