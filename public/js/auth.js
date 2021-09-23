@@ -6,7 +6,6 @@ const url = (window.location.hostname.includes('localhost'))
 
 
 miForm.addEventListener('submit', ev => {
-    console.log(ev);
     ev.preventDefault();
 
     const formData = {};
