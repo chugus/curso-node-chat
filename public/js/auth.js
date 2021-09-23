@@ -6,6 +6,7 @@ const url = (window.location.hostname.includes('localhost'))
 
 
 miForm.addEventListener('submit', ev => {
+    console.log(ev);
     ev.preventDefault();
 
     const formData = {};
@@ -19,7 +20,7 @@ miForm.addEventListener('submit', ev => {
     fetch(url + 'login', {
         method: 'POST',
         body: JSON.stringify(formData),
-        headers: { 'content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' }
     })
         .then(resp => resp.json())
         .then(({ msg, token }) => {
