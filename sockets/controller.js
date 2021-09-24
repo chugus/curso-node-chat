@@ -25,10 +25,11 @@ const socketController = async (socket = new Socket(), io) => {
         io.emit('usuarios-activos', chatMensajes.usuariosArr);
     })
 
-    socket.on('enviar-mensaje', async ({ uid, mensaje }) => {
+    socket.on('enviar-mensaje', async ({ uid = null, mensaje = null }) => {
 
         if (uid) {
-            // Mensaje privado
+
+            // Nombre del destinatario
             const { nombre: para } = await Usuario.findById(uid);
 
             chatMensajes.enviarMensajePrivado(usuario.id, usuario.nombre, mensaje, uid, para);
