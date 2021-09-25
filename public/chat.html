@@ -14,19 +14,41 @@
 
 <body class="container">
 
+    <div class="intro mt-5">
+
+        <h1>Chat en vivo con sockets</h1>
+
+        <p>
+            Para mandar un mensaje a todos, solamente toca "Todos".
+            <br>
+            Para mandar mensaje a alguien en privado,
+            solo presiona el nombre de la persona a quien quieras mandarle un mensaje y asersiorate de que esté en azul
+        </p>
+
+    </div>
+
     <div class="row mt-5">
         <div class="col-sm-6">
+            <h3>Usuarios: </h3>
+            <hr>
+            <ul id="ulUsuarios2">
+                <li>
+                    <p>
+                        <option class="text-success users" value="todos" onclick="uidPrivado(value);"> Todos </option>
+                    </p>
+                </li>
+            </ul>
+            <ul id="ulUsuarios">
+
+            </ul>
+
+            <br>
+
             <h3>Enviar mensaje</h3>
             <hr>
 
             <input type="text" id="txtUMensaje" class="form-control mb-2" placeholder="Mensaje" autocomplete="off">
             <button id="enviarMensaje" class="btn btn-primary mb-5 d-grid">Enviar mensaje</button>
-
-            <h3>Usuarios: </h3>
-            <hr>
-            <ul id="ulUsuarios">
-
-            </ul>
 
         </div>
         <div class="col-sm-6">
@@ -40,9 +62,6 @@
             <div class="col-sm-12">
                 <h3>Chats privados</h3>
                 <hr>
-                <select id="ulUsuariosPrivados" ondblclick="mensajeDesdeElOption(value);">
-
-                </select>
                 <ul id="ulChatsPivados">
 
                 </ul>
@@ -51,7 +70,8 @@
     </div>
 
     <button id="btnSalir" class="btn btn-outline-danger">Logout</button>
-    <br>
+
+    <hr>
 
     <script src="./socket.io/socket.io.js"></script>
     <script src="./js/chat.js"></script>

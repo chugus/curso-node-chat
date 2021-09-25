@@ -6,6 +6,7 @@ const url = (window.location.hostname.includes('localhost'))
 let usuario = null;
 let socket = null;
 const arrayMsg = [];
+const idsPrivados = [];
 
 // referencias HTML
 const txtUid = document.querySelector('#txtUid');
@@ -15,7 +16,22 @@ const ulMensajes = document.querySelector('#ulMensajes');
 const btnSalir = document.querySelector('#btnSalir');
 const enviarMensaje = document.querySelector('#enviarMensaje');
 const ulChatsPivados = document.querySelector('#ulChatsPivados');
-const ulUsuariosPrivados = document.querySelector('#ulUsuariosPrivados');
+
+const txtSeleccionado = () => {
+    const users = document.querySelectorAll('.users');
+
+    for (let i = 0; i < users.length; i++) {
+        users[i].onclick = () => {
+            let j = 0;
+            while (j < users.length) {
+                users[j++].className = 'text-success users';
+            }
+            users[i].className = 'text-info users fs-3 fw-bold';
+            idsPrivados.unshift(users[i].value)
+        }
+    }
+}
+
 
 // Validar el JWT del LS
 const validarJWT = async () => {
@@ -60,53 +76,36 @@ const conectarSocket = async () => {
 
     socket.on('recibir-mensajes', dibujarMensajes);
     socket.on('usuarios-activos', dibujarUsuarios);
-    socket.on('usuarios-activos', dibujarUsuariosPrivados);
 
     socket.on('mensaje-privado', dibujarMensajesPrivados);
 
 }
 
-const mensajeDesdeElOption = (uid) => {
+const uidPrivado = (uid) => {
 
-    const mensaje = txtMensaje.value;
+    idsPrivados.unshift(uid);
 
-    if (mensaje !== '') {
-        socket.emit('enviar-mensaje', { uid, mensaje });
-    }
-
+    return uid;
 }
 
 const dibujarUsuarios = (usuarios = []) => {
 
     let usersHtml = '';
-    usuarios.forEach(({ nombre }) => {
+    usuarios.forEach(({ nombre, uid }) => {
 
         usersHtml += `
             <li>
                 <p>
-                    <h5 class="text-success"> ${nombre} </h5>
+                <option class="text-success users" value="${uid}" onclick="uidPrivado(value);"> ${nombre} </option>
                 </p>
-            </li>
+                </li>
         `;
+
     });
 
     ulUsuarios.innerHTML = usersHtml;
 
-}
-
-const dibujarUsuariosPrivados = (usuariosPrivados = []) => {
-
-    let usersHtml = '';
-    usuariosPrivados.forEach(({ nombre, uid }) => {
-
-        usersHtml += `
-            <option label="${nombre}" value="${uid}">${nombre}</option>
-        `;
-
-    });
-
-
-    ulUsuariosPrivados.innerHTML = usersHtml;
+    txtSeleccionado();
 
 }
 
@@ -118,12 +117,12 @@ const dibujarMensajes = (mensajes = []) => {
 
         mensajesHtml += `
             <li>
-                <p>
+            <p>
                     <span class="text-primary">${mensaje}: </span>
                     <span>${nombre}</span>
                 </p>
             </li>
-        `;
+            `;
 
     });
 
@@ -140,13 +139,13 @@ const dibujarMensajesPrivados = (mensajes) => {
     arrayMsg.forEach(({ destinatario, nombre, mensaje }) => {
         mensajesHtml += `
             <li>
-                <p>
+            <p>
                     <span class="text-primary">${mensaje}: </span>
                     <span>${nombre}</span>
                     <br/>
                     <span class="text-secondary">Para: ${destinatario}</span>
                 </p>
-            </li>
+                </li>
         `;
     })
 
@@ -159,13 +158,24 @@ const dibujarMensajesPrivados = (mensajes) => {
 enviarMensaje.addEventListener('click', () => {
 
     const mensaje = txtMensaje.value;
-    const uid = null;
+    let uid = idsPrivados[0];
 
-    if (mensaje.length === 0) { return; }
+    console.log(idsPrivados)
 
-    socket.emit('enviar-mensaje', { uid, mensaje });
+    if (uid !== 'todos') {
+        if (mensaje.length === 0) { return; }
 
-    txtMensaje.value = '';
+        socket.emit('enviar-mensaje', { uid, mensaje });
+
+        txtMensaje.value = '';
+
+    } else {
+        uid = null;
+        socket.emit('enviar-mensaje', { uid, mensaje });
+
+        txtMensaje.value = '';
+    }
+
 
 });
 
