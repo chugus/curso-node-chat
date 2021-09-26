@@ -25,6 +25,8 @@ const socketController = async (socket = new Socket(), io) => {
         io.emit('usuarios-activos', chatMensajes.usuariosArr);
     })
 
+    socket.emit('nombre-propio', usuario.nombre)
+
     socket.on('enviar-mensaje', async ({ uid = null, mensaje = null }) => {
 
         if (uid) {

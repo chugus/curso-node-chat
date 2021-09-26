@@ -7,6 +7,7 @@ let usuario = null;
 let socket = null;
 const arrayMsg = [];
 const idsPrivados = [];
+let nombrePropio;
 
 // referencias HTML
 const txtUid = document.querySelector('#txtUid');
@@ -17,6 +18,7 @@ const btnSalir = document.querySelector('#btnSalir');
 const enviarMensaje = document.querySelector('#enviarMensaje');
 const ulChatsPivados = document.querySelector('#ulChatsPivados');
 
+// Función para resaltar el usuario seleccionado
 const txtSeleccionado = () => {
     const users = document.querySelectorAll('.users');
 
@@ -31,7 +33,6 @@ const txtSeleccionado = () => {
         }
     }
 }
-
 
 // Validar el JWT del LS
 const validarJWT = async () => {
@@ -112,17 +113,21 @@ const dibujarUsuarios = (usuarios = []) => {
 
 const dibujarMensajes = (mensajes = []) => {
 
+    // Nombre de usuario conectado personal
+    socket.on('nombre-propio', (name) => { nombrePropio = name })
+
     let mensajesHtml = '';
     mensajes.forEach(({ nombre, mensaje }) => {
 
         mensajesHtml += `
-            <li>
-            <p>
-                    <span class="text-primary">${mensaje}: </span>
-                    <span>${nombre}</span>
-                </p>
-            </li>
-            `;
+            <p class="m-3 msgdynamic">
+                <span>De <span class="text-primary">${mensaje === nombrePropio ? 'mi' : mensaje}</span> para <span class="text-primary">Todos</span>: </span>
+
+                <br />
+
+                <p class="bg-primary bg-opacity-25 msg">${nombre}</p>
+            </p>
+        `;
 
     });
 
@@ -138,14 +143,14 @@ const dibujarMensajesPrivados = (mensajes) => {
 
     arrayMsg.forEach(({ destinatario, nombre, mensaje }) => {
         mensajesHtml += `
-            <li>
-            <p>
-                    <span class="text-primary">${mensaje}: </span>
-                    <span>${nombre}</span>
-                    <br/>
-                    <span class="text-secondary">Para: ${destinatario}</span>
-                </p>
-                </li>
+            <p class="m-3 msgdynamic">
+                <span>De <span class="text-primary">${mensaje === nombrePropio ? 'mi' : mensaje}</span> para 
+                <span class="text-primary">${destinatario === nombrePropio ? 'mi' : destinatario}</span>: </span>
+
+                <br/>
+
+                <p class="bg-primary bg-opacity-25 msg">${nombre}</p>
+            </p>
         `;
     })
 
@@ -159,8 +164,6 @@ enviarMensaje.addEventListener('click', () => {
 
     const mensaje = txtMensaje.value;
     let uid = idsPrivados[0];
-
-    console.log(idsPrivados)
 
     if (uid !== 'todos') {
         if (mensaje.length === 0) { return; }
