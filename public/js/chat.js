@@ -127,6 +127,7 @@ const dibujarMensajes = (mensajes = []) => {
 
                 <p class="bg-primary bg-opacity-25 msg">${nombre}</p>
             </p>
+            <hr/>
         `;
 
     });
@@ -151,6 +152,7 @@ const dibujarMensajesPrivados = (mensajes) => {
 
                 <p class="bg-primary bg-opacity-25 msg">${nombre}</p>
             </p>
+            <hr/>
         `;
     })
 
