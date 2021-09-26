@@ -1,3 +1,3 @@
-# WebServer + RestServer
+# Chat en vivo con Sockets
 
-Recuerden que deben de ejecutar ```npm install``` para reconstruir los módulos de Node.
+Es un chat en tiempo real funcionando con sockets y con un restserver propio. Es un chat parecido al de Zoom, solo que ```más bello```...
